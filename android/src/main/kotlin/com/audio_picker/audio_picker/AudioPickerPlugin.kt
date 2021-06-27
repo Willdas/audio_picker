@@ -24,6 +24,7 @@ import android.content.ContentUris
 import android.text.TextUtils
 import android.annotation.TargetApi
 import android.database.Cursor
+import java.io.File
 
 
 class AudioPickerPlugin : MethodCallHandler {
@@ -113,7 +114,9 @@ class AudioPickerPlugin : MethodCallHandler {
                     val type = split[0]
                     if ("primary".equals(type, ignoreCase = true)) {
                         Log.e(TAG, "Primary External Document URI")
-                        return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                        //return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                        val file = instance?.context()?.getExternalFilesDir(null)
+                        return file?.toString() + "/" + split[1]
                     }
                 } else if (isDownloadsDocument(uri)) {
                     Log.e(TAG, "Downloads External Document URI")
@@ -216,7 +219,9 @@ class AudioPickerPlugin : MethodCallHandler {
         if (checkPermission()) {
 
             intent = Intent(Intent.ACTION_GET_CONTENT)
-            val uri = Uri.parse(Environment.getExternalStorageDirectory().path + separator)
+            //val uri = Uri.parse(Environment.getExternalStorageDirectory().path + separator)
+            val file = instance?.context()?.getExternalFilesDir(null)
+            val uri = Uri.parse(file?.path + separator)
             intent.setDataAndType(uri, "audio/*")
             intent.type = "audio/*"
             intent.addCategory(Intent.CATEGORY_OPENABLE)
